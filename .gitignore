@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+hand/ws/build/
+hand/ws/install/
+hand/ws/log/
+arm/src/build/
