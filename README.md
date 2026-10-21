@@ -8,6 +8,7 @@ replay script (`replay_real.py`). Paths below are relative to this folder; nothi
 Aeonlabs_real_robot/
 ├── hand/            DG5F ROS 2 driver sources, build script, ZMQ bridge   -> hand/README.md for install
 ├── arm/             UR5e low-level controller (binary + sources + config)  -> arm/README.md for install
+├── calibration/     camera + robot base calibration with the EE marker board       -> calibration/README.md
 ├── replay_real.py   the replay (this file is the only thing that needs the venv below)
 ├── fake_robot.py    fake arm + hand with the same protocol, for trying without a robot
 ├── *.npz            recorded demonstrations (input)
