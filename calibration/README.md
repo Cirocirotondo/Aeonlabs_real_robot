@@ -11,9 +11,11 @@ paths and the output folder were changed; the maths is untouched.
 
 ```
 calibration/
+├── setup.sh                    creates calibration/.venv (run once per PC)
+├── run_calibration.sh          runs the calibration with that venv
 ├── robot_base_calibration.py   the calibration
 ├── transform_utils.py          small helpers it imports
-├── requirements.txt            extra Python deps (on top of ../requirements.txt)
+├── requirements.txt            Python deps installed by setup.sh
 ├── boards/
 │   ├── aruco_board_DICT_4X4_250_3x3_28.0mm_2026-06-29.{json,pdf}   EE board (print at 100 %)
 │   └── charuco_board.{json,pdf,png}                                 world board (print at 100 %)
@@ -76,31 +78,45 @@ In words:
 
 If the adapter is remounted on a different side or a different TCP is set in the pendant,
 `ADAPTER_TO_EE_POSE` must be changed accordingly, otherwise `T_world_robot_base` is off by
-exactly that error. Alternatively `robohand/src/robot_ipc_control/pose_estimation/robot_hand_eye_calibration.py`
-solves for the EE-to-board transform with `cv2.calibrateHandEye` (24 random poses); it is
-not copied here because it was not the workflow used for this setup.
+exactly that error. (The original robohand repo also has `robot_hand_eye_calibration.py`, which
+solves for the EE-to-board transform with `cv2.calibrateHandEye`; it is not needed here because it was
+not the workflow used for this setup.)
 
-## Running it
+## 1. Install (once per PC)
+
+Everything lives in `calibration/.venv`, separate from the replay venv. Tested with Python 3.10
+(Ubuntu 22.04); `pyrealsense2` 2.53 has no wheels for Python 3.12+.
+
+```bash
+sudo apt install python3-venv
+./calibration/setup.sh
+```
+
+The pip `pyrealsense2` does not install the udev rules, so as a normal user it may see no camera.
+If `./calibration/run_calibration.sh --list` prints nothing while the camera is plugged in (USB 3
+port), install the rules once and replug the camera:
+
+```bash
+sudo curl -fsSL -o /etc/udev/rules.d/99-realsense-libusb.rules \
+  https://raw.githubusercontent.com/IntelRealSense/librealsense/v2.53.1/config/99-realsense-libusb.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
+```
+
+## 2. Run
 
 Hardware: UR5e in Remote Control on 192.168.1.x, RealSense on a USB 3 port, both boards
 printed at 100 % scale, the world board taped flat on the table in view, the EE board on the
 adapter. Clear the workspace: the robot moves ±5 cm around its current pose with random
-small rotations. Keep the e-stop in hand.
-
-Python: the repo venv only has numpy and pyzmq. Use the venv that already has everything
-(`/home/duplo/git/robohand-robohand2/.venv`, Python 3.10, opencv-contrib 4.10), or install
-`requirements.txt` here into a fresh one.
+small rotations. Keep the e-stop in hand. Do not run the replay at the same time (both bind port 5555).
 
 ```bash
 # Terminal 1: arm controller (same one the replay uses)
 ./arm/run_controller.sh
 
-# Terminal 2: calibration. Defaults: boards from ./boards, ports from ../arm/pc_ur_new.json,
-# outputs into ./results. Only the camera serial is required.
-cd calibration
-/home/duplo/git/robohand-robohand2/.venv/bin/python robot_base_calibration.py \
-  --name ur5e \
-  --serial_number <camera serial>      # rs-enumerate-devices | grep Serial
+# Terminal 2: calibration. Defaults: boards from calibration/boards, ports from arm/pc_ur_new.json,
+# outputs into calibration/results. Only the name and the camera serial are required.
+./calibration/run_calibration.sh --list                     # serials of the connected cameras
+./calibration/run_calibration.sh --name ur5e --serial_number <camera serial>
 ```
 
 At each of the 8 poses a window shows the detections and both frame axes. Press `y` to accept,

@@ -1,5 +1,6 @@
-# On top of ../requirements.txt (numpy, pyzmq). Versions are the ones known to work
-# in /home/duplo/git/robohand-robohand2/.venv (Python 3.10).
+# Installed into calibration/.venv by setup.sh. Versions are the ones the reference run used (Python 3.10).
 opencv-contrib-python==4.10.0.84
 pyrealsense2==2.53.1.4623
 scipy==1.15.2
+numpy
+pyzmq

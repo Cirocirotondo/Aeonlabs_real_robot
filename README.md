@@ -24,6 +24,8 @@ Aeonlabs_real_robot/
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
+3. Only if you calibrate camera and robot base: `./calibration/setup.sh` (its own venv, see `calibration/README.md`).
+
 ## On the robot PC: four terminals, e-stop in hand
 
 Hand powered (24 V / 10 A) and on 169.254.186.x; UR in Remote Control and on 192.168.1.x (see the sub-READMEs).
