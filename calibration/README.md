@@ -131,6 +131,6 @@ old built-in 4x5 board.
 
 ## Cameras
 
-The reference run in `results/` was done with the **D405, serial 138322253845**. The D435I
+The reference run in `results/` was done with the **D455, serial 138322253845**. The D435I
 whose intrinsics are in `../intrinsic_calibration.txt` is serial **242322072500**; pass that
 serial to calibrate it. Intrinsics are read live from the device, not from a file.
