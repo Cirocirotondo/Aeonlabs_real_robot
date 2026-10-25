@@ -164,7 +164,8 @@ class Dg5fPolicyBridge(Node):
                 dtype=np.float64,
             )
         else:
-            qd = np.zeros(HAND_DOF, dtype=np.float64)
+            # Missing speed measurements cannot be represented as zero motion.
+            return
         if not np.all(np.isfinite(q)) or not np.all(np.isfinite(qd)):
             return
         self.measured_q = q
@@ -220,6 +221,7 @@ class Dg5fPolicyBridge(Node):
         payload = {
             "type": "hand_state",
             "sequence": self.state_sequence,
+            "measured_age_s": time.monotonic() - self.last_state_at,
             "positions": self.measured_q.tolist(),
             "velocities": self.measured_qd.tolist(),
         }

@@ -79,3 +79,22 @@ Other options: `--hand-only`, `--controller-config arm/pc_ur_new.json` (if you c
 .venv/bin/python fake_robot.py          # fake arm controller + hand bridge, same protocol
 .venv/bin/python replay_real.py demo.npz --send
 ```
+
+## Pipeline integration
+
+Capture, image editing, diffusion, retargeting, visualization and replay
+orchestration are maintained in
+[chenglei-aeonai/aeon-brain](https://github.com/chenglei-aeonai/aeon-brain).
+Follow its installation-layout instructions to use its `brain/` source with
+this hardware workspace. This repository supplies the controllers, hand
+bridge, calibration and collision geometry used by that pipeline.
+
+Build the updated controller with `./arm/build.sh` and start the hand bridge
+with `./hand/run_bridge.sh`. The pipeline checks the advertised watchdog,
+RTDE source freshness and measured hand-state age before motion. Keep
+installation-specific calibration results and safety configuration local.
+
+See the pipeline's
+[physical replay guide](https://github.com/chenglei-aeonai/aeon-brain/blob/main/brain/pipeline/docs/physical_replay.md)
+for the Prepare / Run / Stop workflow. The original demo runner above remains
+available in this repository.

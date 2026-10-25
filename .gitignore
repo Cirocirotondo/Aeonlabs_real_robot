@@ -5,3 +5,15 @@ hand/ws/build/
 hand/ws/install/
 hand/ws/log/
 arm/src/build/
+
+# Local environments, hardware setup and separately managed pipeline checkout.
+*.egg-info/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+arm/calibration_controller
+calibration/safety.json
+
+# Source belongs to chenglei-aeonai/aeon-brain.
+brain/
